@@ -1,4 +1,13 @@
-public class Flower implements FlowerInterface {
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
+
+public class Flower implements FlowerInterface, Serializable {
     private String flowerName;
     private String flowerColor;
 
@@ -28,6 +37,79 @@ public class Flower implements FlowerInterface {
     }
     public void setFlowerColor(String flowerColor) {
         this.flowerColor = flowerColor;
+    }
+
+    public static Flower deserializeFromCSV(String filename) throws IOException {
+
+        Path path = Paths.get(filename);
+
+        BufferedReader reader = Files.newBufferedReader(path);
+        String line = reader.readLine();
+
+        String [] contents = line.split(",");
+        Flower flower1 = new Flower(contents[0], contents[1]);
+        return flower1;
+    }
+
+    public static void serializeToCSV(Flower myFlower, String filename) {
+        String flowerDetails = Flower.getFlowerDetails(myFlower).toString();
+        File file = new File(filename);
+        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8 ))) {
+            writer.write(flowerDetails);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void binarySerialization(Flower myFlower, String filename) throws IOException {
+        FileOutputStream fileOut = new FileOutputStream("flowers.ser");
+        ObjectOutputStream objectOut = new ObjectOutputStream (fileOut);
+        objectOut.writeObject (myFlower);
+        fileOut.close();
+        objectOut.close();
+    }
+
+    public static Flower binaryDeserialization(String filename) throws IOException, ClassNotFoundException {
+        FileInputStream fileIn = new FileInputStream(filename);
+        ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+        Flower flower1 = (Flower) objectIn.readObject();
+        fileIn.close();
+        objectIn.close();
+        return flower1;
+    }
+
+    public static void serializeToXML (Flower myFlower, String filename) throws IOException {
+        FileOutputStream objectOut = new FileOutputStream(filename);
+        XMLEncoder encoder = new XMLEncoder(objectOut);
+        encoder.writeObject(myFlower);
+        encoder.close();
+        objectOut.close();
+    }
+
+    public static Flower deserializeFromXML (String filename) throws IOException {
+        FileInputStream objectIn = new FileInputStream(filename);
+        XMLDecoder decoder = new XMLDecoder(objectIn);
+        Flower flower1 = (Flower) decoder.readObject();
+        decoder.close();
+        objectIn.close();
+        return flower1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Boolean retVal = null;
+        retVal = (this == o);
+            if (o == null || ! (o instanceof Flower)) retVal = false;
+        Flower flower = (Flower) o;
+        retVal = Objects.equals(flowerName, flower.flowerName) &&
+                Objects.equals(flowerColor, flower.flowerColor);
+        return retVal;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(flowerName, flowerColor);
     }
 
     @Override
