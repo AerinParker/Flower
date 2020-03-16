@@ -1,3 +1,4 @@
+import com.thoughtworks.xstream.XStream;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.*;
@@ -10,6 +11,9 @@ import java.util.Objects;
 public class Flower implements FlowerInterface, Serializable {
     private String flowerName;
     private String flowerColor;
+
+    public Flower() {
+    }
 
     public Flower(String flowerName, String flowerColor) {
         this.flowerName = flowerName;
@@ -24,19 +28,20 @@ public class Flower implements FlowerInterface, Serializable {
         return flowerDetails;
     }
 
+    public void setFlowerName(String flowerName) {
+        this.flowerName = flowerName;
+    }
+
+    public void setFlowerColor(String flowerColor) {
+        this.flowerColor = flowerColor;
+    }
+
     public String getFlowerName() {
         return flowerName;
     }
 
     public String getFlowerColor() {
         return flowerColor;
-    }
-
-    public void setFlowerName(String flowerName) {
-        this.flowerName = flowerName;
-    }
-    public void setFlowerColor(String flowerColor) {
-        this.flowerColor = flowerColor;
     }
 
     public static Flower deserializeFromCSV(String filename) throws IOException {
@@ -63,7 +68,7 @@ public class Flower implements FlowerInterface, Serializable {
     }
 
     public static void binarySerialization(Flower myFlower, String filename) throws IOException {
-        FileOutputStream fileOut = new FileOutputStream("flowers.ser");
+        FileOutputStream fileOut = new FileOutputStream(filename);
         ObjectOutputStream objectOut = new ObjectOutputStream (fileOut);
         objectOut.writeObject (myFlower);
         fileOut.close();
@@ -96,6 +101,16 @@ public class Flower implements FlowerInterface, Serializable {
         return flower1;
     }
 
+    public static Flower xStreamSerialization (Flower myFlower) throws IOException {
+        XStream xStream = new XStream();
+        XStream.setupDefaultSecurity(xStream);
+        Class [] classes = new Class [] { Flower.class };
+        xStream.allowTypes(classes);
+        String xml = xStream.toXML(myFlower);
+        Flower flower1 = (Flower) xStream.fromXML(xml);
+        return flower1;
+    }
+
     @Override
     public boolean equals(Object o) {
         Boolean retVal = null;
@@ -110,16 +125,6 @@ public class Flower implements FlowerInterface, Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(flowerName, flowerColor);
-    }
-
-    @Override
-    public void setFlowerName() {
-
-    }
-
-    @Override
-    public void setFlowerColor() {
-
     }
 
 }

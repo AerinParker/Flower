@@ -3,9 +3,6 @@ public interface FlowerInterface {
 
     }
 
-    void setFlowerName();
-    void setFlowerColor();
-
     static void serializeToCSV(Flower myFlower, String filename) {
 
     }
