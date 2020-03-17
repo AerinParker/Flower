@@ -46,7 +46,8 @@ public class FlowerTest {
         Flower flower1 = new Flower();
         flower1.setFlowerName("daffodil");
         flower1.setFlowerColor("yellow");
-        Flower flower2 = Flower.xStreamSerialization(flower1);
+        Flower.xStreamSerialization(flower1, "flowers2.xml");
+        Flower flower2 = Flower.xStreamDeserialization("flowers2.xml");
 
         assertEquals(flower1, flower2);
     }

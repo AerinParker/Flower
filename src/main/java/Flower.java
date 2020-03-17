@@ -101,13 +101,22 @@ public class Flower implements FlowerInterface, Serializable {
         return flower1;
     }
 
-    public static Flower xStreamSerialization (Flower myFlower) throws IOException {
+    public static void xStreamSerialization (Flower myFlower, String filename) throws IOException {
         XStream xStream = new XStream();
         XStream.setupDefaultSecurity(xStream);
         Class [] classes = new Class [] { Flower.class };
         xStream.allowTypes(classes);
-        String xml = xStream.toXML(myFlower);
-        Flower flower1 = (Flower) xStream.fromXML(xml);
+        FileOutputStream out = new FileOutputStream(filename);
+        xStream.toXML(myFlower, out);
+    }
+
+    public static Flower xStreamDeserialization (String filename) {
+        XStream xStream = new XStream();
+        XStream.setupDefaultSecurity(xStream);
+        Class [] classes = new Class [] { Flower.class };
+        xStream.allowTypes(classes);
+        File file = new File(filename);
+        Flower flower1 = (Flower) xStream.fromXML(file);
         return flower1;
     }
 
