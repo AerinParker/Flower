@@ -1,3 +1,5 @@
+package flower;
+
 import com.thoughtworks.xstream.XStream;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;

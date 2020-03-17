@@ -1,3 +1,5 @@
+package flower;
+
 public interface FlowerInterface {
     static void getFlowerDetails(Flower myFlower) {
 
