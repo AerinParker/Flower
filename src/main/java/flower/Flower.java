@@ -22,12 +22,8 @@ public class Flower implements FlowerInterface, Serializable {
         this.flowerColor = flowerColor;
     }
 
-    public static StringBuilder getFlowerDetails(Flower myFlower) {
-        StringBuilder flowerDetails = new StringBuilder();
-        flowerDetails.append(myFlower.getFlowerName());
-        flowerDetails.append(",");
-        flowerDetails.append(myFlower.getFlowerColor());
-        return flowerDetails;
+    public static String toString(Flower myFlower) {
+        return myFlower.getFlowerName() + ", " + myFlower.getFlowerColor();
     }
 
     public void setFlowerName(String flowerName) {
@@ -47,19 +43,18 @@ public class Flower implements FlowerInterface, Serializable {
     }
 
     public static Flower deserializeFromCSV(String filename) throws IOException {
-
         Path path = Paths.get(filename);
 
         BufferedReader reader = Files.newBufferedReader(path);
         String line = reader.readLine();
 
-        String [] contents = line.split(",");
+        String [] contents = line.split(", ");
         Flower flower1 = new Flower(contents[0], contents[1]);
         return flower1;
     }
 
     public static void serializeToCSV(Flower myFlower, String filename) {
-        String flowerDetails = Flower.getFlowerDetails(myFlower).toString();
+        String flowerDetails = Flower.toString(myFlower);
         File file = new File(filename);
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8 ))) {
             writer.write(flowerDetails);
@@ -69,7 +64,7 @@ public class Flower implements FlowerInterface, Serializable {
         }
     }
 
-    public static void binarySerialization(Flower myFlower, String filename) throws IOException {
+    public static void binarySerialization(flower.Flower myFlower, String filename) throws IOException {
         FileOutputStream fileOut = new FileOutputStream(filename);
         ObjectOutputStream objectOut = new ObjectOutputStream (fileOut);
         objectOut.writeObject (myFlower);
@@ -86,7 +81,7 @@ public class Flower implements FlowerInterface, Serializable {
         return flower1;
     }
 
-    public static void serializeToXML (Flower myFlower, String filename) throws IOException {
+    public static void serializeToXML(flower.Flower myFlower, String filename) throws IOException {
         FileOutputStream objectOut = new FileOutputStream(filename);
         XMLEncoder encoder = new XMLEncoder(objectOut);
         encoder.writeObject(myFlower);
@@ -94,7 +89,7 @@ public class Flower implements FlowerInterface, Serializable {
         objectOut.close();
     }
 
-    public static Flower deserializeFromXML (String filename) throws IOException {
+    public static Flower deserializeFromXML(String filename) throws IOException {
         FileInputStream objectIn = new FileInputStream(filename);
         XMLDecoder decoder = new XMLDecoder(objectIn);
         Flower flower1 = (Flower) decoder.readObject();
@@ -103,7 +98,7 @@ public class Flower implements FlowerInterface, Serializable {
         return flower1;
     }
 
-    public static void xStreamSerialization (Flower myFlower, String filename) throws IOException {
+    public static void xStreamSerialization(flower.Flower myFlower, String filename) throws IOException {
         XStream xStream = new XStream();
         XStream.setupDefaultSecurity(xStream);
         Class [] classes = new Class [] { Flower.class };
@@ -112,7 +107,7 @@ public class Flower implements FlowerInterface, Serializable {
         xStream.toXML(myFlower, out);
     }
 
-    public static Flower xStreamDeserialization (String filename) {
+    public static Flower xStreamDeserialization(String filename) {
         XStream xStream = new XStream();
         XStream.setupDefaultSecurity(xStream);
         Class [] classes = new Class [] { Flower.class };
